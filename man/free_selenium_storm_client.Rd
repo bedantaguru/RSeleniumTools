@@ -7,7 +7,7 @@
 free_selenium_storm_client(client)
 }
 \arguments{
-\item{client}{clinet to free}
+\item{client}{client to free}
 }
 \description{
 Free the Selenium Storm Client that was currently used

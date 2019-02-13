@@ -45,8 +45,16 @@ get_active_sessions <- function(client, close_inactive = T){
     e$queryRD(qpath)
     !("message" %in% names(e$.self$value))
   }
+  test_id_safe <- function(id){
+    ms <- suppressMessages(try(test_id(id), silent = T))
+    if(inherits(ms, "try-error")){
+      F
+    }else{
+      ms
+    }
+  }
 
-  all_sessions_info <- all_sessions_id %>% lapply(test_id) %>% unlist()
+  all_sessions_info <- all_sessions_id %>% lapply(test_id_safe) %>% unlist()
   active_sessions <- all_sessions[all_sessions_info]
   if(close_inactive & length(all_sessions_info)){
     close_loc <- function(id){

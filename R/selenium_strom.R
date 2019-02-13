@@ -119,7 +119,7 @@ selenium_storm_client <- function(Browser = c("chrome", "firefox", "phantomjs", 
       break()
     }
 
-    cl <- client_instant(Browser = Browser, headless = headless, ...)
+    cl <- try(client_instant(Browser = Browser, headless = headless, ...), silent = T)
 
     if(inherits(cl,"remoteDriver")){
       break()
@@ -133,7 +133,7 @@ selenium_storm_client <- function(Browser = c("chrome", "firefox", "phantomjs", 
 
 #' Free the Selenium Storm Client that was currently used
 #'
-#' @param client clinet to free
+#' @param client client to free
 #'
 #' @export
 #'

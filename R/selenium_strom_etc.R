@@ -148,7 +148,12 @@ sid_pid_map <- function(){
   st <- get_selenium_storm_storr()
 
   dsi <- data.frame(si = st$list("sessions"), stringsAsFactors = F)
-  dsi$pid <- dsi$si %>% purrr::map_chr(~st$get(.x,namespace = "sessions")) %>%  as.integer()
+  safeget <- function(x){
+    gt <- try({st$get(x,namespace = "sessions")}, silent = T)
+    if(inherits(gt,"try-error")) return(NA)
+    gt
+  }
+  dsi$pid <- dsi$si %>% purrr::map_chr(safeget) %>%  as.integer()
   dsi$is_dead_pid <- !is_pid_active(dsi$pid)
   dsi
 }

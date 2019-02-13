@@ -16,6 +16,12 @@ selenium_storm_client(Browser = c("chrome", "firefox", "phantomjs",
 
 \item{...}{}
 }
+\value{
+Returns a client
+}
 \description{
 Get a Selenium Storm Client for oprations
+}
+\examples{
+selenium_storm_client()
 }

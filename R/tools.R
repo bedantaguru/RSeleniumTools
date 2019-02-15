@@ -38,7 +38,8 @@ is_present_texts <- function(client, txt){
 #' @export
 #'
 wait_for_texts <- function(client, txt, wait_time){
-  attempt(ifelse(is_present_texts(client, txt), TRUE, stop()), wait_time = wait_time)
+  #attempt(ifelse(is_present_texts(client, txt), TRUE, stop()), wait_time = wait_time)
+  attempt(need(is_present_texts(client, txt)), wait_time = wait_time)
 }
 
 #' Attempt something few times
@@ -53,6 +54,12 @@ wait_for_texts <- function(client, txt, wait_time){
 #' print(attempt(log(1)))
 #' print(attempt(log("a")))
 attempt<- function(expr, wait_time = 10){
+  suppressMessages(suppressWarnings(.attempt(expr = expr, wait_time = wait_time)))
+
+}
+
+# raw function
+.attempt<- function(expr, wait_time = Inf){
   t0 <- Sys.time()
   e <- NULL
   repeat({
@@ -83,6 +90,20 @@ attempt<- function(expr, wait_time = 10){
 
 }
 
+
+#' Alias for stopifnot
+#' @details This is to be added in attempt block based on requirements. The \code{TRUE} logical value mentioned under \code{need} will end the attmpt block.
+#' It should be given in the end of attempt block
+#' @export
+#'
+#' @examples
+#' set.seed(1)
+#' attempt({
+#' u <- rnorm(1,mean = -2)
+#' need(u>0)})
+#' u
+#' #0.4016178
+need <- stopifnot
 
 #' Create a safe version of a function
 #'

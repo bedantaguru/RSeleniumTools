@@ -186,6 +186,7 @@ attach_to_active_session <- function(client, session_id, fast = F){
 
       if(fresh_get){
         all_sessions <- client$getSessions()
+        ses_stor$set("active_sessions", all_sessions,"cache")
       }
 
       all_sessions_id <- all_sessions %>% purrr::map_chr("id")

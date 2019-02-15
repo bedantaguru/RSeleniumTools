@@ -259,11 +259,19 @@ sid_pid_map <- function(){
 
 sid_pid_map_fast <- function(){
   sst <- get_selenium_storm_storr(session = T)
+  d <- NULL
 
   if(!sst$exists("sid_pid_map", "cache_data")){
     sid_pid_map()
+  }else{
+    d <- sst$get("sid_pid_map", "cache_data")
+    if(nrow(d)==0){
+      sid_pid_map()
+      d <- sst$get("sid_pid_map", "cache_data")
+    }
   }
-  sst$get("sid_pid_map", "cache_data")
+
+  d
 }
 
 sessions_cleanup.pids <- function(){
@@ -305,7 +313,11 @@ client_instant_fast <- function(Browser, headless, ...){
 
   # only tries to attach
   rt <- NULL
-  st <- get_selenium_storm_storr()
+  st <- get_selenium_storm_storr(session = T)
+  if(!st$exists("port","config")){
+    sync_session_config()
+  }
+
 
   if(st$get("singular_pid_sid","config")){
 
@@ -320,7 +332,8 @@ client_instant_fast <- function(Browser, headless, ...){
       # fast attach_to_active_session is also required
       attach_ok <- attach_to_active_session(dummy_client, this_sid, fast = T)
       if(attach_ok){
-        open_browser(dummy_client)
+        # diabled as no extra information will be added
+        # open_browser(dummy_client)
         rt <- dummy_client
       }
 

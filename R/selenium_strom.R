@@ -92,7 +92,11 @@ selenium_storm <- function(port = 15318L,
 #' check_selenium_strom()
 check_selenium_strom <- function(){
 
-  st <- get_selenium_storm_storr()
+  st <- get_selenium_storm_storr(session = T)
+  if(!st$exists("port","config")){
+    sync_session_config()
+  }
+
   chk1 <- F
   chk2 <- F
 
@@ -132,14 +136,15 @@ check_selenium_strom <- function(){
 #' @param Browser which browser to start
 #' @param headless whether headless of not
 #' @param wait_time specific wait time (in min)
-#' @param ...
+#' @param final_active_check if set true whether session is active or not will be checked each time.
+#' @param ... additional parameter to be passed to remote Driver (RSelenium)
 #'
 #' @return Returns a client
 #' @export
 #'
 #' @examples
 #' selenium_storm_client()
-selenium_storm_client <- function(Browser, headless, wait_time = Inf, ...){
+selenium_storm_client <- function(Browser, headless, wait_time = Inf, final_active_check = F, ...){
 
   if(!check_selenium_strom()){
     stop("selenium_strom not running")
@@ -158,8 +163,13 @@ selenium_storm_client <- function(Browser, headless, wait_time = Inf, ...){
 
     cl <- try(client_instant_fast(Browser = Browser, headless = headless, ...), silent = T)
 
-    chk1 <- try(is_active(cl), silent = T)
-    if(!is.logical(chk1)) chk1 <- F
+    if(final_active_check){
+      chk1 <- try(is_active(cl), silent = T)
+      if(!is.logical(chk1)) chk1 <- F
+    }else{
+      chk1 <- T
+    }
+
 
     if(inherits(cl,"remoteDriver") & chk1){
       break()

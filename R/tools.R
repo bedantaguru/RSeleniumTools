@@ -1,0 +1,115 @@
+
+#' Read source html code from the client
+#'
+#' @param client The selenium client from where the source is required to read
+#'
+#' @return An XML document (similar to \code{xml2::read_html})
+#' @export
+#'
+#' @examples
+#' selenium_storm()
+#' cl <- selenium_storm_client()
+#' read_source(cl)
+read_source <- function(client){
+  client$getPageSource()[[1]] %>% xml2::read_html()
+}
+
+
+#' Checks whether a specific set of texts are present in current browser or not
+#'
+#' @param client The selenium client
+#' @param txt The text to search
+#'
+#' @return Logical scaler indicating presence of the text in the client
+#' @export
+#'
+is_present_texts <- function(client, txt){
+
+  read_source(client) %>% rvest::html_text() %>% stringr::str_detect(txt) %>% all
+
+}
+
+#' Wait for a Text to appear in the browser
+#'
+#' @param client The selenium client
+#' @param txt The text to search
+#' @param wait_time wait time in sec (default is 10)
+#'
+#' @export
+#'
+wait_for_texts <- function(client, txt, wait_time){
+  attempt(ifelse(is_present_texts(client, txt), TRUE, stop()), wait_time = wait_time)
+}
+
+#' Attempt something few times
+#'
+#' @param expr Expression to run
+#' @param wait_time Wait time in sec (default 10)
+#'
+#' @return \code{NULL} if the \code{expr} fails to run (or genuinely returns \code{NULL}). Otherwise it returns (invisibly) the value of the expression.
+#' @export
+#'
+#' @examples
+#' print(attempt(log(1)))
+#' print(attempt(log("a")))
+attempt<- function(expr, wait_time = 10){
+  t0 <- Sys.time()
+  e <- NULL
+  repeat({
+
+    e <- try(expr, silent = T)
+
+    if(!inherits(e, "try-error")){
+      break()
+    }else{
+      Sys.sleep(0.1)
+    }
+
+    t1 <- Sys.time()
+    te <- difftime(t1, t0, units = "sec")
+
+
+    if(te>wait_time){
+      break()
+    }
+
+  })
+
+  if(inherits(e, "try-error")){
+    e <- NULL
+  }
+
+  invisible(e)
+
+}
+
+
+#' Create a safe version of a function
+#'
+#' @param .f A function, formula, or atomic vector. Same as \code{purrr} style.
+#' @param instant Default is FALSE, If enabled only one time \code{.f} will be attempted.
+#'
+#' @return a safe version of the input function
+#' @export
+#'
+#' @examples
+#' slog <- safe(log, instant = T)
+#' print(slog(1))
+#' print(slog("1"))
+#'
+safe <- function(.f, instant = F){
+  .f <- purrr::as_mapper(.f)
+  if(instant){
+    .f_safe <- function(...){
+      attempt(.f(...), wait_time = 0)
+    }
+  }else{
+    .f_safe <- function(...){
+      attempt(.f(...))
+    }
+  }
+
+  return(.f_safe)
+
+}
+

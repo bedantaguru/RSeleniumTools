@@ -4,8 +4,12 @@
 #' @param port port to listen for selenium
 #' @param check If set to \code{TRUE}, checks the versions of selenium available and the versions of associated drivers (chromever, geckover, phantomver, iedrver).
 #' If new versions are available they will be downloaded.
-#' @param clean_start If set to \code{TRUE} it discards old config and starts fresh
+#' @param clean_start If set to \code{TRUE} it discards old config and starts fresh.
 #' @param singular_pid_sid If set to \code{TRUE} only one selenium session per process will be allowed. Default is \code{TRUE}.
+#' @param num_sessions number of sessions to allow. If not mentioned it will take values = \code{parallel::detectCores()}.
+#' @param Browser (optional) The browser to initiate by default.
+#' @param headless (optional) If set \code{TRUE} it will start a headless browser.
+#' @param fresh_start Restarts Selenium Storm.
 #'
 #' @return It returns invisibly the selenium handle (as returned by wdman::selenium)
 #' @export
@@ -13,12 +17,38 @@
 #' @examples
 #' selenium_storm()
 selenium_storm <- function(port = 15318L,
+                           Browser,
+                           headless,
+                           fresh_start = F,
                            check = FALSE,
-                           clean_start =  FALSE,
-                           singular_pid_sid = TRUE) {
+                           clean_start =  TRUE,
+                           singular_pid_sid = TRUE,
+                           num_sessions) {
 
+  if(fresh_start){
+    selenium_storm_kill_all()
+  }
 
-  selenium_storm_init(port, check, clean_start, singular_pid_sid)
+  client_config_set <- F
+  if(!missing(Browser) |!missing(headless)){
+    if(is.logical(headless)){
+      if(missing(Browser)){
+        Browser <- valid_Browser()
+      }else{
+        Browser <- valid_Browser(Browser)
+      }
+      client_config_set <- T
+    }
+  }
+
+  selenium_storm_init(port = port,
+                      check = check,
+                      clean_start = clean_start,
+                      singular_pid_sid = singular_pid_sid,
+                      num_sessions = num_sessions,
+                      Browser = Browser,
+                      headless = headless,
+                      client_profile_set = client_config_set)
 
   st <- get_selenium_storm_storr()
 
@@ -101,7 +131,7 @@ check_selenium_strom <- function(){
 #'
 #' @param Browser which browser to start
 #' @param headless whether headless of not
-#' @param wait_time specific wait time
+#' @param wait_time specific wait time (in min)
 #' @param ...
 #'
 #' @return Returns a client
@@ -109,19 +139,47 @@ check_selenium_strom <- function(){
 #'
 #' @examples
 #' selenium_storm_client()
-selenium_storm_client <- function(Browser = c("chrome", "firefox", "phantomjs", "internet explorer"), headless = F, wait_time = Inf, ...){
+selenium_storm_client <- function(Browser, headless, wait_time = Inf, ...){
+
+  if(!check_selenium_strom()){
+    stop("selenium_strom not running")
+  }
+
+  cl <- NULL
+
+  vl <- get_unified_client_config(Browser, headless)
+  Browser <- vl$Browser
+  headless <- vl$headless
+
   t0 <- Sys.time()
   repeat({
+
+    # first try using fast mode
+
+    cl <- try(client_instant_fast(Browser = Browser, headless = headless, ...), silent = T)
+
+    chk1 <- try(is_active(cl), silent = T)
+    if(!is.logical(chk1)) chk1 <- F
+
+    if(inherits(cl,"remoteDriver") & chk1){
+      break()
+    }
+
+    # then regular mode
+
+    cl <- try(client_instant(Browser = Browser, headless = headless, ...), silent = T)
+
+    chk2 <- try(is_active(cl), silent = T)
+    if(!is.logical(chk2)) chk2 <- F
+
+    if(inherits(cl,"remoteDriver") & chk2){
+      break()
+    }
+
     t1 <- Sys.time()
     te <- difftime(t1, t0, units = "min")
 
     if(te>wait_time){
-      break()
-    }
-
-    cl <- try(client_instant(Browser = Browser, headless = headless, ...), silent = T)
-
-    if(inherits(cl,"remoteDriver")){
       break()
     }
 

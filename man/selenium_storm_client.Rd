@@ -4,15 +4,14 @@
 \alias{selenium_storm_client}
 \title{Get a Selenium Storm Client for oprations}
 \usage{
-selenium_storm_client(Browser = c("chrome", "firefox", "phantomjs",
-  "internet explorer"), headless = F, wait_time = Inf, ...)
+selenium_storm_client(Browser, headless, wait_time = Inf, ...)
 }
 \arguments{
 \item{Browser}{which browser to start}
 
 \item{headless}{whether headless of not}
 
-\item{wait_time}{specific wait time}
+\item{wait_time}{specific wait time (in min)}
 
 \item{...}{}
 }

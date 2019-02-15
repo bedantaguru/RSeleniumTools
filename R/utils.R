@@ -1,20 +1,36 @@
 
 
+valid_Browser <- function(Browser = c("chrome", "firefox", "phantomjs", "internet explorer")){
+  Browser <- match.arg(Browser)
+  Browser
+}
 
 get_version <- function(){
   .RSeleniumToolsEnv$version
+}
+
+get_selenium_storm_storr_base_path <- function(){
+  rappdirs::user_data_dir("selenium_storm", "RSeleniumTools")
 }
 
 get_selenium_storm_storr <- function(session = F){
   if(session){
     storr::storr_environment(.RSeleniumToolsEnv$selenium_storm_env)
   }else{
-    rappdirs::user_data_dir("selenium_storm", "RSeleniumTools") %>% file.path("storr") %>%  storr::storr_rds()
+    get_selenium_storm_storr_base_path() %>% file.path("storr") %>%  storr::storr_rds()
+  }
+}
+
+sync_session_config <- function(){
+  sst <- get_selenium_storm_storr(session = T)
+  if(!sst$exists("port", "config")){
+    st <- get_selenium_storm_storr()
+    st$export(dest = sst, namespace = "config")
   }
 }
 
 get_selenium_storm_lock_path <- function(name = "sessions"){
-  rappdirs::user_data_dir("selenium_storm", "RSeleniumTools") %>% file.path("locks", name)
+  get_selenium_storm_storr_base_path() %>% file.path("locks", name)
 }
 
 get_selenium_storm_session_lock <- function(sid){

@@ -4,18 +4,27 @@
 \alias{selenium_storm}
 \title{Start a Selenium Storm instance}
 \usage{
-selenium_storm(port = 15318L, check = FALSE, clean_start = FALSE,
-  singular_pid_sid = TRUE)
+selenium_storm(port = 15318L, Browser, headless, fresh_start = F,
+  check = FALSE, clean_start = TRUE, singular_pid_sid = TRUE,
+  num_sessions)
 }
 \arguments{
 \item{port}{port to listen for selenium}
 
+\item{Browser}{(optional) The browser to initiate by default.}
+
+\item{headless}{(optional) If set \code{TRUE} it will start a headless browser.}
+
+\item{fresh_start}{Restarts Selenium Storm.}
+
 \item{check}{If set to \code{TRUE}, checks the versions of selenium available and the versions of associated drivers (chromever, geckover, phantomver, iedrver).
 If new versions are available they will be downloaded.}
 
-\item{clean_start}{If set to \code{TRUE} it discards old config and starts fresh}
+\item{clean_start}{If set to \code{TRUE} it discards old config and starts fresh.}
 
 \item{singular_pid_sid}{If set to \code{TRUE} only one selenium session per process will be allowed. Default is \code{TRUE}.}
+
+\item{num_sessions}{number of sessions to allow. If not mentioned it will take values = \code{parallel::detectCores()}.}
 }
 \value{
 It returns invisibly the selenium handle (as returned by wdman::selenium)

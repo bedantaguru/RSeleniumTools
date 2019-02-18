@@ -26,6 +26,7 @@ sync_session_config <- function(){
   if(!sst$exists("port", "config")){
     st <- get_selenium_storm_storr()
     st$export(dest = sst, namespace = "config")
+    st$export(dest = sst, namespace = "client_config")
   }
 }
 

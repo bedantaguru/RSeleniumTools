@@ -91,6 +91,9 @@ selenium_storm_kill_all <- function(){
     }
   }
 
+  sst <- get_selenium_storm_storr(T)
+  sst$destroy()
+
   st$destroy()
   unlink(get_selenium_storm_storr_base_path(), recursive = T, force = T)
 

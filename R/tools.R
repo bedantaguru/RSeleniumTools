@@ -118,7 +118,7 @@ need <- stopifnot
 #' print(slog(1))
 #' print(slog("1"))
 #'
-safe <- function(.f, instant = F){
+safe <- function(.f, instant = F, wait_time){
   .f <- purrr::as_mapper(.f)
   if(instant){
     .f_safe <- function(...){
@@ -126,7 +126,7 @@ safe <- function(.f, instant = F){
     }
   }else{
     .f_safe <- function(...){
-      attempt(.f(...))
+      attempt(.f(...), wait_time = wait_time)
     }
   }
 

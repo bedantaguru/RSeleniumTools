@@ -4,7 +4,7 @@
 \alias{safe}
 \title{Create a safe version of a function}
 \usage{
-safe(.f, instant = F)
+safe(.f, instant = F, wait_time = 5)
 }
 \arguments{
 \item{.f}{A function, formula, or atomic vector. Same as \code{purrr} style.}

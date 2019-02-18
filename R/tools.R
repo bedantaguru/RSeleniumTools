@@ -118,7 +118,7 @@ need <- stopifnot
 #' print(slog(1))
 #' print(slog("1"))
 #'
-safe <- function(.f, instant = F, wait_time){
+safe <- function(.f, instant = F, wait_time = 5){
   .f <- purrr::as_mapper(.f)
   if(instant){
     .f_safe <- function(...){

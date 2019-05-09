@@ -37,7 +37,7 @@ is_present_texts <- function(client, txt){
 #'
 #' @export
 #'
-wait_for_texts <- function(client, txt, wait_time){
+wait_for_texts <- function(client, txt, wait_time = 10){
   #attempt(ifelse(is_present_texts(client, txt), TRUE, stop()), wait_time = wait_time)
   attempt(need(is_present_texts(client, txt)), wait_time = wait_time)
 }

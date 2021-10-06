@@ -255,7 +255,11 @@ sid_pid_map <- function(){
     gt
   }
   dsi$pid <- dsi$si %>% purrr::map_chr(safeget) %>%  as.integer()
-  dsi$is_dead_pid <- !is_pid_active(dsi$pid)
+  if(length(dsi$pid)==0){
+    dsi$is_dead_pid <- logical(0)
+  }else{
+    dsi$is_dead_pid <- !is_pid_active(dsi$pid)
+  }
   sst$set("sid_pid_map", dsi, "cache_data")
   dsi
 }

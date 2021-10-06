@@ -4,9 +4,16 @@
 \alias{selenium_storm}
 \title{Start a Selenium Storm instance}
 \usage{
-selenium_storm(port = 15318L, Browser, headless, fresh_start = F,
-  check = FALSE, clean_start = TRUE, singular_pid_sid = TRUE,
-  num_sessions)
+selenium_storm(
+  port = 15318L,
+  Browser,
+  headless,
+  fresh_start = F,
+  check = FALSE,
+  clean_start = TRUE,
+  singular_pid_sid = TRUE,
+  num_sessions
+)
 }
 \arguments{
 \item{port}{port to listen for selenium}

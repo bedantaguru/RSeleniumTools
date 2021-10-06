@@ -52,5 +52,8 @@ get_selenium_storm_session_lock <- function(sid){
 }
 
 is_pid_active <- function(pid){
+
+  if(length(pid)==0) return(FALSE)
+
   pid %in% ps::ps_pids()
 }

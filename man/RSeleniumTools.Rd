@@ -3,8 +3,4 @@
 \docType{package}
 \name{RSeleniumTools}
 \alias{RSeleniumTools}
-\alias{RSeleniumTools-package}
 \title{RSeleniumTools: Additional tools and utilities for RSelenium}
-\description{
-RSeleniumTools: Additional tools and utilities for RSelenium
-}

@@ -4,8 +4,13 @@
 \alias{selenium_storm_client}
 \title{Get a Selenium Storm Client for oprations}
 \usage{
-selenium_storm_client(Browser, headless, wait_time = Inf,
-  final_active_check = F, ...)
+selenium_storm_client(
+  Browser,
+  headless,
+  wait_time = Inf,
+  final_active_check = F,
+  ...
+)
 }
 \arguments{
 \item{Browser}{which browser to start}

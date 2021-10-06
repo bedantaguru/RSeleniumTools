@@ -4,7 +4,7 @@
 \alias{make_selenium_storm_future_ready}
 \title{Make the selenium_storm ready for future (async)}
 \usage{
-make_selenium_storm_future_ready()
+make_selenium_storm_future_ready(n)
 }
 \description{
 Make the selenium_storm ready for future (async)

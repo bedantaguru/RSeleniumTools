@@ -4,7 +4,7 @@
 \alias{wait_for_texts}
 \title{Wait for a Text to appear in the browser}
 \usage{
-wait_for_texts(client, txt, wait_time)
+wait_for_texts(client, txt, wait_time = 10)
 }
 \arguments{
 \item{client}{The selenium client}

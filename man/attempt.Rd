@@ -4,7 +4,7 @@
 \alias{attempt}
 \title{Attempt something few times}
 \usage{
-attempt(expr, wait_time = 10)
+attempt(expr, wait_time = 10, num_iters = 5)
 }
 \arguments{
 \item{expr}{Expression to run}

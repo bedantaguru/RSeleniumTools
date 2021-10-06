@@ -4,7 +4,7 @@
 \alias{need}
 \title{Alias for stopifnot}
 \usage{
-need(..., exprs, local = TRUE)
+need(..., exprs, exprObject, local = TRUE)
 }
 \description{
 Alias for stopifnot

@@ -3,7 +3,7 @@
 #'
 #' @export
 #'
-make_selenium_storm_future_ready <- function(){
+make_selenium_storm_future_ready <- function(n){
   cat("\nNote this is in Alpha stage (not guaranteed to work all times)\n")
   if(rlang::is_installed("furrr") & rlang::is_installed("future")){
     if(check_selenium_strom()){
@@ -12,7 +12,14 @@ make_selenium_storm_future_ready <- function(){
 
       num_cores <-parallel::detectCores()
 
-      future::plan(future::multiprocess)
+      if(!missing(n)){
+        future::plan(list(future::tweak(future::multiprocess, workers = as.integer(n))))
+      }else{
+        future::plan(future::multiprocess)
+      }
+
+
+
 
       pids <- num_cores %>% seq %>% furrr::future_map_int(~Sys.getpid()) %>% unique()
 

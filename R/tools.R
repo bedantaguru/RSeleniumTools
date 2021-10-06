@@ -53,14 +53,15 @@ wait_for_texts <- function(client, txt, wait_time = 10){
 #' @examples
 #' print(attempt(log(1)))
 #' print(attempt(log("a")))
-attempt<- function(expr, wait_time = 10){
-  suppressMessages(suppressWarnings(.attempt(expr = expr, wait_time = wait_time)))
+attempt<- function(expr, wait_time = 10, num_iters = 5){
+  suppressMessages(suppressWarnings(.attempt(expr = expr, wait_time = wait_time, num_iters = num_iters)))
 
 }
 
 # raw function
-.attempt<- function(expr, wait_time = Inf){
+.attempt<- function(expr, wait_time = Inf, num_iters = Inf){
   t0 <- Sys.time()
+  itr <- 0
   e <- NULL
   repeat({
 
@@ -75,8 +76,13 @@ attempt<- function(expr, wait_time = 10){
     t1 <- Sys.time()
     te <- difftime(t1, t0, units = "sec")
 
+    itr <- itr+1
 
     if(te>wait_time){
+      break()
+    }
+
+    if(itr>num_iters){
       break()
     }
 

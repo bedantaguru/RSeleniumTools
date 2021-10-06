@@ -74,7 +74,7 @@ selenium_storm <- function(port = 15318L,
                                verbose = FALSE,
                                check = check)
 
-    st$set("last_selenium_pid", as.integer(selServ$process$c_handle), namespace = "config")
+    st$set("last_selenium_pid", as.integer(selServ$process$get_pid()), namespace = "config")
 
     sst$set("selenium", selServ, "handles")
 
